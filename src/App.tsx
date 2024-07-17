@@ -1,4 +1,6 @@
-import { Map } from "react-map-gl";
+import { Map, Source, Layer } from "react-map-gl";
+import data from "./data";
+import { FillLayerSpecification } from "mapbox-gl";
 
 const MAPBOX_STYLES = {
   light: "mapbox://styles/mapbox/light-v9",
@@ -7,6 +9,14 @@ const MAPBOX_STYLES = {
   outdoors: "mapbox://styles/mapbox/outdoors-v9",
   satellite: "mapbox://styles/mapbox/satellite-streets-v9",
   customStreets: "mapbox://styles/communitylogiq/cl4nfqn13000115qodliwpes5",
+};
+
+const style: Omit<FillLayerSpecification, "id" | "source"> = {
+  type: "fill",
+  paint: {
+    "fill-color": "orange",
+    "fill-opacity": 0.9,
+  },
 };
 
 function App() {
@@ -19,15 +29,20 @@ function App() {
       // @ts-ignore
       mapLib={import("mapbox-gl")}
       initialViewState={{
-        longitude: -124.00597106759845,
-        latitude: 49.18253094260672,
-        zoom: 12,
+        latitude: 49.190956386059554,
+        longitude: -123.99084221671657,
+        zoom: 14.571518385838502,
       }}
       mapStyle={MAPBOX_STYLES.customStreets}
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
       logoPosition="top-left"
-      onClick={console.log}
-    ></Map>
+      interactiveLayerIds={["my-data"]}
+      onClick={(ev) => console.log(ev.features)}
+    >
+      <Source id="my-data" type="geojson" data={data}>
+        <Layer id="my-data" {...style} />
+      </Source>
+    </Map>
   );
 }
 
